@@ -1,7 +1,17 @@
 <template>
   <div class="movie-page">
     <v-container>
-      <v-row class="flex-column flex-md-row">
+      <v-row v-if="isLoading">
+        <v-col class="movie-page__loading"
+          ><loading :active.sync="isLoading"></loading
+        ></v-col>
+      </v-row>
+      <v-row
+        v-else-if="!Object.keys(movie).length && !isLoading"
+        class="movie-page__empty"
+        >Something went wrong</v-row
+      >
+      <v-row v-else class="flex-column flex-md-row">
         <v-col class="col-md-4 col-sm-5 col-6">
           <v-img :src="movie.Poster"></v-img>
         </v-col>
@@ -99,7 +109,7 @@
                     </v-col>
                     <v-col>
                       <v-list-item-content>{{
-                        movie.BoxOffice
+                        movie.BoxOffice || 'N/A'
                       }}</v-list-item-content>
                     </v-col>
                   </v-row>
@@ -153,7 +163,11 @@
 </template>
 <script>
 import { mapState } from 'vuex'
+import Loading from 'vue-loading-overlay'
 export default {
+  components: {
+    Loading
+  },
   methods: {
     addToFavourites () {
       const movie = {
@@ -168,27 +182,38 @@ export default {
   },
   computed: {
     ...mapState({
-      movie: state => state.movies.currentMovie,
+      isLoading: state => state.currentMovie.isLoading,
+      movie: state => state.currentMovie.movie,
       favourites: state => state.favourites.favourites
     }),
     isMovieExists () {
       let bool = false
-      Object.values(this.favourites).forEach(item => {
-        if (this.movie.imdbID == item.imdbID) {
-          bool = true
-        }
-      })
+      if (this.favourites) {
+        Object.values(this.favourites).forEach(item => {
+          if (this.movie.imdbID == item.imdbID) {
+            bool = true
+          }
+        })
+      }
       return bool
     }
   },
   created () {
-    this.$store.dispatch('movies/fetchCurrentMovie', this.$route.params.id)
+    this.$store.dispatch('currentMovie/fetchMovie', this.$route.params.id)
   }
 }
 </script>
 
 <style lang="scss">
 .movie-page {
+  &__loading {
+    display: flex;
+    justify-content: center;
+  }
+  &__empty {
+    display: flex;
+    justify-content: center;
+  }
   &__btn {
     margin-bottom: 10px;
   }

@@ -2,7 +2,9 @@
   <v-app-bar color="secondary primary--text" app>
     <v-container>
       <v-row class="align-center">
-        <v-toolbar-title>Movies</v-toolbar-title>
+        <router-link :to="{ name: 'main' }">
+          <v-toolbar-title>Movies</v-toolbar-title>
+        </router-link>
 
         <v-spacer></v-spacer>
 

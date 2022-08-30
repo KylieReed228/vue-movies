@@ -2,9 +2,10 @@ import axios from 'axios'
 
 export default {
   state: {
+    isLoading: false,
     movies: [],
-    totalResults: 0,
-    currentMovie: {}
+    error: '',
+    totalResults: 0
   },
   getters: {
     getTotalPages (state) {
@@ -12,24 +13,31 @@ export default {
     }
   },
   mutations: {
+    setLoading (state, payload) {
+      state.isLoading = payload
+    },
     setMovies (state, payload) {
       state.movies = payload
+    },
+    setError (state, payload) {
+      state.error = payload
     },
     setTotalResults (state, payload) {
       state.totalResults = payload
     },
-    setCurrentPage (state, payload) {
-      state.currentPage = payload
+    clearMovies (state) {
+      state.movies = []
     },
-    setCurrentMovie (state, payload) {
-      state.currentMovie = payload
+    clearTotalResults (state) {
+      state.totalResults = 0
     }
   },
   actions: {
     async fetchMovies ({ commit }, { query, page }) {
+      commit('setLoading', true)
       try {
         const response = await axios.get(
-          'http://www.omdbapi.com/?apikey=ba997323',
+          'https://www.omdbapi.com/?apikey=ba997323',
           {
             params: {
               s: query,
@@ -37,25 +45,16 @@ export default {
             }
           }
         )
-        commit('setMovies', response.data.Search)
-        commit('setTotalResults', response.data.totalResults)
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    async fetchCurrentMovie ({ commit }, id) {
-      try {
-        const response = await axios.get(
-          'http://www.omdbapi.com/?apikey=ba997323',
-          {
-            params: {
-              i: id
-            }
-          }
-        )
-        commit('setCurrentMovie', response.data)
-      } catch (error) {
-        console.log(error)
+        if (response.data.Response === 'True') {
+          commit('setMovies', response.data.Search)
+          commit('setTotalResults', response.data.totalResults)
+        } else {
+          commit('setError', response.data.Error)
+        }
+      } catch {
+        commit('setError', 'Something went wrong')
+      } finally {
+        commit('setLoading', false)
       }
     }
   },

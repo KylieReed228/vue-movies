@@ -3,9 +3,15 @@
     <v-container>
       <div class="d-flex justify-center flex-column align-center">
         <main-movie-card class="mb-10" />
-        <search-form @select-query="selectQuery" />
+        <v-text-field
+          class="main-page__search"
+          v-model="searchInput"
+          @input="debounceQuery"
+          type="search"
+          label="What are you looking for?"
+        ></v-text-field>
       </div>
-      <div v-if="movies.length">
+      <div v-if="movies.length && this.query && !isLoading">
         <div class="main-page__movie-list">
           <movie-card
             class="main-page__movie-card"
@@ -22,42 +28,49 @@
           ></v-pagination>
         </div>
       </div>
+      <div v-else-if="isLoading" class="main-page__loading">
+        <loading :active.sync="isLoading"></loading>
+      </div>
+      <div v-else class="main-page__error">{{ error }}</div>
     </v-container>
   </div>
 </template>
 <script>
-import SearchForm from '@/components/SearchForm.vue'
 import MainMovieCard from '@/components/MainMovieCard.vue'
 import MovieCard from '@/components/MovieCard.vue'
+import Loading from 'vue-loading-overlay'
+import debounce from 'lodash.debounce'
+import { auth } from '@/main'
 import { mapGetters, mapState } from 'vuex'
 export default {
   components: {
-    SearchForm,
     MainMovieCard,
-    MovieCard
+    MovieCard,
+    Loading
   },
   data () {
     return {
+      searchInput: '',
       query: '',
       page: 1
     }
   },
   methods: {
-    selectQuery (query) {
-      this.query = query
-    },
     fetchMovies () {
       const formData = {
         query: this.query,
         page: this.page
       }
       this.$store.dispatch('movies/fetchMovies', formData)
-    }
+    },
+    debounceQuery: debounce(function () {
+      this.query = this.searchInput
+    }, 500)
   },
   watch: {
     pageStateOptions: function (val) {
       if (val.query == '') {
-        this.$router.push({ query: {} })
+        this.$router.push({ query: {} }).catch(() => {})
       } else {
         this.$router
           .push({
@@ -75,11 +88,17 @@ export default {
         this.page = Number(this.$route.query.page)
         this.fetchMovies()
       }
+    },
+    query: function (val) {
+      this.searchInput = val
+      this.page = 1
     }
   },
   computed: {
     ...mapState({
-      movies: state => state.movies.movies
+      movies: state => state.movies.movies,
+      isLoading: state => state.movies.isLoading,
+      error: state => state.movies.error
     }),
     ...mapGetters({
       totalPages: 'movies/getTotalPages'
@@ -97,11 +116,17 @@ export default {
       this.page = Number(this.$route.query.page)
       this.fetchMovies()
     }
+    if (auth.currentUser) {
+      this.$store.dispatch('favourites/fetchFavourites')
+    }
   }
 }
 </script>
 <style lang="scss">
 .main-page {
+  &__search {
+    width: 300px;
+  }
   &__movie-list {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -116,6 +141,13 @@ export default {
     @media screen and (max-width: 540px) {
       grid-template-columns: repeat(2, 1fr);
     }
+  }
+  &__loading {
+    display: flex;
+    justify-content: center;
+  }
+  &__error {
+    text-align: center;
   }
 }
 .theme--dark.v-pagination .v-pagination__item--active {

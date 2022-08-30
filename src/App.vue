@@ -2,14 +2,8 @@
   <router-view />
 </template>
 <script>
-import { auth } from '@/main'
 export default {
-  name: 'App',
-  created () {
-    if (!auth.currentUser === null) {
-      this.$store.dispatch('favourites/fetchFavourites')
-    }
-  }
+  name: 'App'
 }
 </script>
 <style lang="scss">

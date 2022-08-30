@@ -1,7 +1,13 @@
 <template>
   <div class="favourites-page">
     <v-container>
-      <div class="favourites-page__items">
+      <div
+        v-if="favourites === null || !Object.keys(favourites).length"
+        class="favourites-page__empty"
+      >
+        It looks like you didn't add movies
+      </div>
+      <div v-else class="favourites-page__items">
         <movie-card
           v-for="favourite in favourites"
           :key="favourite.imdbID"
@@ -29,6 +35,10 @@ export default {
 
 <style lang="scss">
 .favourites-page {
+  &__empty {
+    font-size: 32px;
+    text-align: center;
+  }
   &__items {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
