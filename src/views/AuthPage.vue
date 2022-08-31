@@ -19,8 +19,8 @@
   </v-app>
 </template>
 <script>
-import LoginForm from '../components/LoginForm.vue'
-import RegistrationForm from '../components/RegistrationForm.vue'
+import LoginForm from '@/components/LoginForm.vue'
+import RegistrationForm from '@/components/RegistrationForm.vue'
 export default {
   components: {
     LoginForm,
@@ -43,16 +43,12 @@ export default {
   &__block {
     width: 400px;
     border-radius: 15px;
-    padding: 10px;
+    padding: 15px;
   }
 
   &__tabs {
     display: flex;
     justify-content: center;
-  }
-
-  &__tabs-item {
-    min-height: 300px;
   }
 }
 </style>

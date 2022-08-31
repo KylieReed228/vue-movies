@@ -10,6 +10,7 @@
     <v-text-field
       v-model="password"
       :error-messages="passwordErrors"
+      class="mb-2"
       type="password"
       label="Password"
       required
@@ -43,20 +44,18 @@ export default {
   },
   methods: {
     async submit () {
-      if (this.$v.email.$invalid || this.$v.password.$invalid) {
-        return
-      } else {
-        this.isLoading = true
-
-        const formData = {
-          email: this.email,
-          password: this.password
-        }
-
-        await this.$store.dispatch('auth/handleLogin', formData)
-
-        this.isLoading = false
+      if (!this.email || !this.password) {
+        this.$v.email.$touch()
+        this.$v.password.$touch()
       }
+      if (this.$v.email.$invalid || this.$v.password.$invalid) return
+      this.isLoading = true
+      const formData = {
+        email: this.email,
+        password: this.password
+      }
+      await this.$store.dispatch('auth/handleLogin', formData)
+      this.isLoading = false
     }
   },
   computed: {

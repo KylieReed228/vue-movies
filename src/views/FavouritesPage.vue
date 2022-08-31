@@ -1,18 +1,15 @@
 <template>
   <div class="favourites-page">
     <v-container>
-      <div
-        v-if="favourites === null || !Object.keys(favourites).length"
-        class="favourites-page__empty"
-      >
-        It looks like you didn't add movies
-      </div>
-      <div v-else class="favourites-page__items">
+      <div v-if="favourites" class="favourites-page__items">
         <movie-card
           v-for="favourite in favourites"
           :key="favourite.imdbID"
           :movie="favourite"
         ></movie-card>
+      </div>
+      <div v-else class="favourites-page__empty">
+        It looks like you didn't add movies
       </div>
     </v-container>
   </div>

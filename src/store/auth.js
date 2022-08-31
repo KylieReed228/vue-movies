@@ -25,6 +25,10 @@ export default {
     },
     setRegisterError (state, payload) {
       state.errorRegister = payload
+    },
+    cleanErrors (state) {
+      state.errorLogin = ''
+      state.errorRegister = ''
     }
   },
   actions: {
@@ -33,6 +37,7 @@ export default {
         await createUserWithEmailAndPassword(auth, email, password).then(data =>
           commit('setUser', data.user)
         )
+        commit('cleanErrors')
         router.push({ name: 'main' })
       } catch (error) {
         commit('setRegisterError', ErrorMessages[error.code])
@@ -43,6 +48,7 @@ export default {
         await signInWithEmailAndPassword(auth, email, password).then(data =>
           commit('setUser', data.user)
         )
+        commit('cleanErrors')
         router.push({ name: 'main' })
       } catch (error) {
         commit('setLoginError', ErrorMessages[error.code])

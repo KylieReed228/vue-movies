@@ -3,11 +3,14 @@ import { ref, push, set, onValue } from 'firebase/database'
 
 export default {
   state: {
-    favourites: {},
+    favourites: null
   },
   mutations: {
     setFavourites (state, payload) {
       state.favourites = payload
+    },
+    cleanFavourites (state) {
+      state.favourites = null
     }
   },
   actions: {
@@ -15,20 +18,16 @@ export default {
       let isFavouriteExists = false
       if (state.favourites) {
         Object.values(state.favourites).forEach(item => {
-          if (item.imdbID == favourite.imdbID) {
+          if (item.imdbID === favourite.imdbID) {
             isFavouriteExists = true
           }
         })
       }
       try {
-        if (!isFavouriteExists) {
-          const postListRef = ref(
-            db,
-            `users/${auth.currentUser.uid}/favourites`
-          )
-          const newPostRef = push(postListRef)
-          set(newPostRef, favourite)
-        }
+        if (isFavouriteExists) return
+        const favouritesRef = ref(db, `users/${auth.currentUser.uid}/favourites`)
+        const newFavouriteRef = push(favouritesRef)
+        set(newFavouriteRef, favourite)
       } catch (error) {
         console.log(error)
       }

@@ -18,6 +18,7 @@
     <v-text-field
       v-model="repeatPassword"
       :error-messages="repeatPasswordErrors"
+      class="mb-2"
       type="password"
       label="Repeat password"
       required
@@ -64,24 +65,23 @@ export default {
   },
   methods: {
     async submit () {
+      if (!this.email || !this.password || !this.repeatPassword) {
+        this.$v.email.$touch()
+        this.$v.password.$touch()
+        this.$v.repeatPassword.$touch()
+      }
       if (
         this.$v.email.$invalid ||
         this.$v.password.$invalid ||
         this.$v.repeatPassword.$invalid
-      ) {
-        return
-      } else {
-        this.isLoading = true
-
-        const formData = {
-          email: this.email,
-          password: this.password
-        }
-
-        await this.$store.dispatch('auth/handleRegister', formData)
-
-        this.isLoading = false
+      ) return
+      this.isLoading = true
+      const formData = {
+        email: this.email,
+        password: this.password
       }
+      await this.$store.dispatch('auth/handleRegister', formData)
+      this.isLoading = false
     }
   },
   computed: {

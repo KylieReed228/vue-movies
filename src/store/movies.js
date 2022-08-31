@@ -3,9 +3,11 @@ import axios from 'axios'
 export default {
   state: {
     isLoading: false,
+    query: '',
+    page: 1,
     movies: [],
-    error: '',
-    totalResults: 0
+    totalResults: 0,
+    error: ''
   },
   getters: {
     getTotalPages (state) {
@@ -16,11 +18,25 @@ export default {
     setLoading (state, payload) {
       state.isLoading = payload
     },
+    setQuery (state, payload) {
+      state.query = payload
+    },
+    setPage (state, payload) {
+      state.page = payload
+    },
     setMovies (state, payload) {
       state.movies = payload
     },
+    cleanMovies (state) {
+      state.movies = []
+      state.query = '',
+      state.page = 1
+    },
     setError (state, payload) {
       state.error = payload
+    },
+    cleanError (state) {
+      state.error = ''
     },
     setTotalResults (state, payload) {
       state.totalResults = payload
@@ -33,21 +49,23 @@ export default {
     }
   },
   actions: {
-    async fetchMovies ({ commit }, { query, page }) {
+    async fetchMovies ({ state, commit }) {
+      if (!state.query) return
       commit('setLoading', true)
       try {
         const response = await axios.get(
           'https://www.omdbapi.com/?apikey=ba997323',
           {
             params: {
-              s: query,
-              page
+              s: state.query,
+              page: state.page
             }
           }
         )
         if (response.data.Response === 'True') {
           commit('setMovies', response.data.Search)
           commit('setTotalResults', response.data.totalResults)
+          commit('cleanError')
         } else {
           commit('setError', response.data.Error)
         }
