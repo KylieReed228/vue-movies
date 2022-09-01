@@ -11,19 +11,19 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       {
-        path: '',
+        path: '/movies',
         name: 'main',
         component: () => import('@/views/MainPage.vue')
+      },
+      {
+        path: '/movies/:id',
+        name: 'moviePage',
+        component: () => import('@/views/MoviePage.vue')
       },
       {
         path: '/favourites',
         name: 'favourites',
         component: () => import('@/views/FavouritesPage.vue')
-      },
-      {
-        path: '/:id',
-        name: 'moviePage',
-        component: () => import('@/views/MoviePage.vue')
       }
     ]
   },
@@ -44,6 +44,9 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   requiresAuth && !auth.currentUser ? next({ name: 'auth' }) : next()
+  if (to.path === '/' && auth.currentUser) {
+    next({ name: 'main'})
+  }
 })
 
 export default router

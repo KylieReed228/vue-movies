@@ -3,15 +3,21 @@
     :value="value"
     @input="debounceQuery"
     type="search"
-    label="What are you looking for?"
+    :label="label"
   ></v-text-field>
 </template>
 
 <script>
 import debounce from 'lodash.debounce'
 export default {
+  name: 'SearchForm',
   props: {
     value: {
+      type: String, Number,
+      default: '',
+      required: false
+    },
+    label: {
       type: String, Number,
       default: '',
       required: false

@@ -15,6 +15,7 @@
 import TheLogo from '@/components/TheLogo.vue'
 import TheMenu from '@/components/TheMenu.vue'
 export default {
+  name: 'TheHeader',
   components: {
     TheLogo, TheMenu
   }

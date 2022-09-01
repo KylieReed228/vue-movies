@@ -6,14 +6,16 @@
           ><loading :active.sync="isLoading"></loading
         ></v-col>
       </v-row>
-      <v-row
-        v-else-if="!Object.keys(movie).length && !isLoading"
-        class="movie-page__empty"
+      <v-row v-else-if="!movie && !isLoading" class="movie-page__empty"
         >Something went wrong</v-row
       >
       <v-row v-else class="flex-column flex-md-row">
         <v-col class="col-md-4 col-sm-5 col-6">
-          <v-img :src="movie.Poster"></v-img>
+          <v-img
+            v-if="movie.Poster === 'N/A'"
+            src="../assets/images/no-image.webp"
+          ></v-img>
+          <v-img v-else :src="movie.Poster"></v-img>
         </v-col>
         <v-col class="col-md-8 col">
           <v-row>
@@ -25,119 +27,22 @@
               <v-btn
                 @click="addToFavourites"
                 :disabled="isMovieExists"
-                class="movie-page__favorite-btn accent"
+                class="movie-page__favourite-btn accent"
                 >Will Watch</v-btn
               >
               <p class="movie-page__description">{{ movie.Plot }}</p>
               <v-list class="movie-page__list transparent">
-                <v-list-item>
+                <v-list-item v-for="listItem in list" :key="listItem">
                   <v-row>
                     <v-col class="col-3">
-                      <v-list-item-content class="movie-page__list-item-title"
-                        >Country</v-list-item-content
+                      <v-list-item-content
+                        class="movie-page__list-item-title"
+                        >{{ listItem }}</v-list-item-content
                       >
                     </v-col>
                     <v-col>
                       <v-list-item-content>{{
-                        movie.Country
-                      }}</v-list-item-content>
-                    </v-col>
-                  </v-row>
-                </v-list-item>
-                <v-list-item>
-                  <v-row>
-                    <v-col class="col-3">
-                      <v-list-item-content class="movie-page__list-item-title"
-                        >Awards</v-list-item-content
-                      >
-                    </v-col>
-                    <v-col>
-                      <v-list-item-content>{{
-                        movie.Awards
-                      }}</v-list-item-content>
-                    </v-col>
-                  </v-row>
-                </v-list-item>
-                <v-list-item>
-                  <v-row>
-                    <v-col class="col-3">
-                      <v-list-item-content class="movie-page__list-item-title"
-                        >Genre</v-list-item-content
-                      >
-                    </v-col>
-                    <v-col>
-                      <v-list-item-content>{{
-                        movie.Genre
-                      }}</v-list-item-content>
-                    </v-col>
-                  </v-row>
-                </v-list-item>
-                <v-list-item>
-                  <v-row>
-                    <v-col class="col-3">
-                      <v-list-item-content class="movie-page__list-item-title"
-                        >Writer</v-list-item-content
-                      >
-                    </v-col>
-                    <v-col>
-                      <v-list-item-content>{{
-                        movie.Writer
-                      }}</v-list-item-content>
-                    </v-col>
-                  </v-row>
-                </v-list-item>
-                <v-list-item>
-                  <v-row>
-                    <v-col class="col-3">
-                      <v-list-item-content class="movie-page__list-item-title"
-                        >Director</v-list-item-content
-                      >
-                    </v-col>
-                    <v-col>
-                      <v-list-item-content>{{
-                        movie.Director
-                      }}</v-list-item-content>
-                    </v-col>
-                  </v-row>
-                </v-list-item>
-                <v-list-item>
-                  <v-row>
-                    <v-col class="col-3">
-                      <v-list-item-content class="movie-page__list-item-title"
-                        >Box Office</v-list-item-content
-                      >
-                    </v-col>
-                    <v-col>
-                      <v-list-item-content>{{
-                        movie.BoxOffice || 'N/A'
-                      }}</v-list-item-content>
-                    </v-col>
-                  </v-row>
-                </v-list-item>
-                <v-list-item>
-                  <v-row>
-                    <v-col class="col-3">
-                      <v-list-item-content class="movie-page__list-item-title"
-                        >Released</v-list-item-content
-                      >
-                    </v-col>
-                    <v-col>
-                      <v-list-item-content>{{
-                        movie.Released
-                      }}</v-list-item-content>
-                    </v-col>
-                  </v-row>
-                </v-list-item>
-                <v-list-item>
-                  <v-row>
-                    <v-col class="col-3">
-                      <v-list-item-content class="movie-page__list-item-title"
-                        >Runtime</v-list-item-content
-                      >
-                    </v-col>
-                    <v-col>
-                      <v-list-item-content>{{
-                        movie.Runtime
+                        movie[listItem] || 'N/A'
                       }}</v-list-item-content>
                     </v-col>
                   </v-row>
@@ -167,6 +72,20 @@ import Loading from 'vue-loading-overlay'
 export default {
   components: {
     Loading
+  },
+  data () {
+    return {
+      list: [
+        'Country',
+        'Awards',
+        'Genre',
+        'Writer',
+        'Director',
+        'BoxOffice',
+        'Released',
+        'Runtime'
+      ]
+    }
   },
   methods: {
     addToFavourites () {
@@ -214,7 +133,7 @@ export default {
     display: flex;
     justify-content: center;
   }
-  &__btn {
+  &__favourite-btn {
     margin-bottom: 10px;
   }
 

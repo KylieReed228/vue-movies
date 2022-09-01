@@ -40,6 +40,7 @@ import {
 } from 'vuelidate/lib/validators'
 import { mapState } from 'vuex'
 export default {
+  name: 'RegistrationForm',
   data () {
     return {
       email: '',

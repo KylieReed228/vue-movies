@@ -12,7 +12,7 @@
         :label="theme"
       ></v-switch>
 
-      <v-btn color="accent" class="mb-5" to="favourites">
+      <v-btn color="accent" class="mb-5" :to="{ name: 'favourites' }">
         Favourites
       </v-btn>
 
@@ -25,6 +25,7 @@
 
 <script>
 export default {
+  name: 'TheMenu',
   methods: {
     signOut () {
       this.$store.dispatch('auth/handleSignOut')

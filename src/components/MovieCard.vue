@@ -12,6 +12,7 @@
 
 <script>
 export default {
+  name: 'MovieCard',
   props: {
     movie: {
       type: Object,

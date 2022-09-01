@@ -9,7 +9,9 @@
   </v-card>
 </template>
 <script>
-export default {}
+export default {
+  name: 'MainMovieCard'
+}
 </script>
 
 <style lang="scss">

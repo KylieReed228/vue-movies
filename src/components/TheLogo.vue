@@ -4,6 +4,11 @@
     <span>Movies</span>
   </router-link>
 </template>
+<script>
+export default {
+  name: 'TheLogo'
+}
+</script>
 <style lang="scss">
 .logo {
     display: flex;

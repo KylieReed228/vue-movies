@@ -3,9 +3,19 @@
     <v-container>
       <div class="d-flex justify-center flex-column align-center">
         <main-movie-card class="mb-10" />
-        <search-form class="main-page__search" v-model="query" />
+        <search-form
+          class="main-page__search"
+          v-model="query"
+          :label="'What are you looking for?'"
+        />
       </div>
-      <div v-if="movies.length && !isLoading">
+      <div v-if="isLoading" class="main-page__loading">
+        <loading :active.sync="isLoading"></loading>
+      </div>
+      <div v-else-if="error && !isLoading" class="main-page__error">
+        {{ error }}
+      </div>
+      <div v-else-if="movies.length && !isLoading">
         <div class="main-page__movie-list">
           <movie-card
             class="main-page__movie-card"
@@ -22,10 +32,6 @@
           ></v-pagination>
         </div>
       </div>
-      <div v-else-if="isLoading" class="main-page__loading">
-        <loading :active.sync="isLoading"></loading>
-      </div>
-      <div v-else class="main-page__error">{{ error }}</div>
     </v-container>
   </div>
 </template>

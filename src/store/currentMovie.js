@@ -3,7 +3,7 @@ import axios from 'axios'
 export default {
   state: {
     isLoading: false,
-    movie: {}
+    movie: null
   },
   getters: {},
   mutations: {
