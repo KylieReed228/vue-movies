@@ -29,8 +29,8 @@ export default {
   name: 'LoginForm',
   data () {
     return {
-      email: 'admin',
-      password: 'admin',
+      email: 'admin@gmail.com',
+      password: '123123',
       isLoading: false
     }
   },
