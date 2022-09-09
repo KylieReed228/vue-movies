@@ -23,14 +23,13 @@
   </form>
 </template>
 <script>
-import { required, email } from 'vuelidate/lib/validators'
 import { mapState } from 'vuex'
 export default {
   name: 'LoginForm',
   data () {
     return {
-      email: '',
-      password: '',
+      email: 'admin',
+      password: 'admin',
       isLoading: false
     }
   },
