@@ -24,6 +24,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
+import { required, email } from 'vuelidate/lib/validators'
 export default {
   name: 'LoginForm',
   data () {
